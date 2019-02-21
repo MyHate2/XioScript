@@ -2,14 +2,14 @@
 // @name           XioScript
 // @namespace      https://github.com/XiozZe/XioScript
 // @description    XioScript with XioMaintenance
-// @version        12.0.138
+// @version        12.1.3
 // @author		   XiozZe
 // @require        https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js
 // @include        http*://*virtonomic*.*/*/*
 // @exclude        http*://virtonomics.wikia.com*
 // ==/UserScript==
 
-var version = "12.0.138";
+var version = "12.1.3";
 
 this.$ = this.jQuery = jQuery.noConflict(true);
 
@@ -2179,7 +2179,7 @@ function prodSupply(type, subid, choice) {
 
     function post() {
         $("[id='x" + "Supply" + "current']").html('<a href="/' + realm + '/main/unit/view/' + subid + '">' + subid + '</a>');
-
+	//remove
         if (choice[0] === 4) {
             var data = 'destroy=1';
 
@@ -2203,12 +2203,16 @@ function prodSupply(type, subid, choice) {
 
             for (var i = 0; i < mapped[url].parcel.length; i++) {
                 var newsupply = 0;
+		//Required prod
                 if (choice[0] === 2 && mapped[url].isProd) {
-                    newsupply = mapped[url].required[i]
+                    newsupply = mapped[url].required[i];
+		//Required !prod
                 } else if (choice[0] === 2 && !mapped[url].isProd) {
                     newsupply = mapped[url2].consump[i];
+		//Stock prod
                 } else if (choice[0] === 3 && mapped[url].isProd) {
                     newsupply = Math.min(2 * mapped[url].required[i], Math.max(3 * mapped[url].required[i] - mapped[url].stock[i], 0));
+		//Stock !prod
                 } else if (choice[0] === 3 && !mapped[url].isProd) {
                     newsupply = Math.min(2 * mapped[url2].consump[i], Math.max(3 * mapped[url2].consump[i] - mapped[url].stock[i], 0));
                 }
@@ -2221,17 +2225,30 @@ function prodSupply(type, subid, choice) {
 
             for (var i = 0; i < mapped[url].parcel.length; i++) {
                 var newsupply = 0;
+		//Zero
                 if (choice[0] === 1) {
                     newsupply = 0;
+		//Required prod
                 } else if (choice[0] === 2 && mapped[url].isProd) {
-                    newsupply = mapped[url].required[i]
+                    newsupply = mapped[url].required[i];
+		//Required !prod
                 } else if (choice[0] === 2 && !mapped[url].isProd) {
                     newsupply = mapped[url2].consump[i];
+		//Stock prod
                 } else if (choice[0] === 3 && mapped[url].isProd) {
                     newsupply = Math.min(2 * mapped[url].required[i], Math.max(3 * mapped[url].required[i] - mapped[url].stock[i], 0));
+		//Stock !prod
                 } else if (choice[0] === 3 && !mapped[url].isProd) {
                     newsupply = Math.min(2 * mapped[url2].consump[i], Math.max(3 * mapped[url2].consump[i] - mapped[url].stock[i], 0));
-                }
+		    if (isNaN(newsupply)) {
+                        newsupply = 0;
+                    }
+                    //запас менее 5к и заказ менее 5к, то закажем 5к (если потребление выродилось в ноль, то оживим снабжение)
+                    if (mapped[url].stock[i] < 5000 && newsupply < 5000) {
+                        newsupply = 5000;
+                        //postMessage("s3 sup = " + newsupply + " choice = " + choice[0] + " isProd = " + mapped[url].isProd);
+                    }
+		}
 
                 if (mapped[url].parcel[i] !== newsupply || mapped[url].reprice[i]) {
                     change.push({
@@ -2349,7 +2366,7 @@ function storeSupply(type, subid, choice) {
             } else if (choice[1] === 2) {
                 minsupply = Math.ceil(1000 / mapped[url].price[i]);
             } else if (choice[1] === 3) {
-                minsupply = Math.ceil(1000000 / mapped[url].price[i]);
+                minsupply = Math.ceil(10000000 / mapped[url].price[i]);
             } else if (choice[1] === 4) {
                 minsupply = Math.ceil(mapped[reports[i]].marketsize * 0.01);
             } else if (choice[1] === 5) {
@@ -4849,8 +4866,8 @@ var policyJSON = {
     },
     sr: {
         func: storeSupply,
-        save: [["-", "Zero", "Sold", "Amplify", "Stock", "Enhance"], ["None", "One", "$1 000", "$1 000 000", "Market 1%", "Market 5%", "Market 10%"], ["Any Q", "Local Q", "City Q"]],
-        order: [["-", "Zero", "Sold", "Stock", "Amplify", "Enhance"], ["None", "One", "$1 000", "$1 000 000", "Market 1%", "Market 5%", "Market 10%"], ["Any Q", "Local Q", "City Q"]],
+        save: [["-", "Zero", "Sold", "Amplify", "Stock", "Enhance"], ["None", "One", "$1 000", "$10 000 000", "Market 1%", "Market 5%", "Market 10%"], ["Any Q", "Local Q", "City Q"]],
+        order: [["-", "Zero", "Sold", "Stock", "Amplify", "Enhance"], ["None", "One", "$1 000", "$10 000 000", "Market 1%", "Market 5%", "Market 10%"], ["Any Q", "Local Q", "City Q"]],
         name: "supplyRetail",
         group: "Supply",
         wait: ["priceProd", "policy", "research"],
