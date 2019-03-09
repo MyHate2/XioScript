@@ -2,14 +2,14 @@
 // @name           XioScript
 // @namespace      https://github.com/XiozZe/XioScript
 // @description    XioScript with XioMaintenance
-// @version        12.1.5
+// @version        12.1.6
 // @author		   XiozZe
 // @require        https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js
 // @include        http*://*virtonomic*.*/*/*
 // @exclude        http*://virtonomics.wikia.com*
 // ==/UserScript==
 
-var version = "12.1.5";
+var version = "12.1.6";
 
 this.$ = this.jQuery = jQuery.noConflict(true);
 
@@ -2214,10 +2214,10 @@ function prodSupply(type, subid, choice) {
                     newsupply = mapped[url2].consump[i];
 		//Stock prod
                 } else if (choice[0] === 3 && mapped[url].isProd) {
-                    newsupply = Math.min(4 * mapped[url].required[i], Math.max(3 * mapped[url].required[i] - mapped[url].stock[i], 0));
+                    newsupply = Math.min(2 * mapped[url].required[i], Math.max(3 * mapped[url].required[i] - mapped[url].stock[i], 0));
 		//Stock !prod
                 } else if (choice[0] === 3 && !mapped[url].isProd) {
-                    newsupply = Math.min(4 * mapped[url2].consump[i], Math.max(5 * mapped[url2].consump[i] - mapped[url].stock[i], 0));
+                    newsupply = Math.min(2 * mapped[url2].consump[i], Math.max(3 * mapped[url2].consump[i] - mapped[url].stock[i], 0));
                 }
                 if (newsupply > 0 && mapped[url].available[i] < newsupply) {
                     var prodText = (mapped[url].isProd) ? "(production) " : "";
