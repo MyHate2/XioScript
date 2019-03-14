@@ -3551,7 +3551,7 @@ function technology(type, subid, choice) {
                     change = true;
                     postMessage("Tech lvl for subdivision <a href=" + url + ">" + subid + "</a> is changed to " + newTech);
                     break;
-                } else if (!advised && numberfy(mapped[url].price[i]) <= newTech * 1000000000 && newTech <= techLevel && newTech > mapped[url].currentlvl && mapped[url].currentlvl > 0) {
+                } else if (!advised && numberfy(mapped[url].price[i]) <= newTech * 100000000 && newTech <= techLevel && newTech > mapped[url].currentlvl && mapped[url].currentlvl > 0) {
                     postMessage("You can buy lvl "+ newTech +" (current "+ mapped[url].currentlvl +") for subdivision <a href=" + url + ">" + subid + "</a>, price: " + mapped[url].price[i]);
                     advised = true;
                 }
