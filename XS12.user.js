@@ -2,14 +2,14 @@
 // @name           XioScript
 // @namespace      https://github.com/XiozZe/XioScript
 // @description    XioScript with XioMaintenance
-// @version        12.1.7
+// @version        12.1.8
 // @author		   XiozZe
 // @require        https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js
 // @include        http*://*virtonomic*.*/*/*
 // @exclude        http*://virtonomics.wikia.com*
 // ==/UserScript==
 
-var version = "12.1.7";
+var version = "12.1.8";
 
 this.$ = this.jQuery = jQuery.noConflict(true);
 
@@ -3551,7 +3551,7 @@ function technology(type, subid, choice) {
                     change = true;
                     postMessage("Tech lvl for subdivision <a href=" + url + ">" + subid + "</a> is changed to " + newTech);
                     break;
-                } else if (!advised && numberfy(mapped[url].price[i]) <= newTech * 1000000000 && newTech <= techLevel && newTech > mapped[url].currentlvl && mapped[url].currentlvl > 0) {
+                } else if (!advised && numberfy(mapped[url].price[i]) <= newTech * 100000000 && newTech <= techLevel && newTech > mapped[url].currentlvl && mapped[url].currentlvl > 0) {
                     postMessage("You can buy lvl "+ newTech +" (current "+ mapped[url].currentlvl +") for subdivision <a href=" + url + ">" + subid + "</a>, price: " + mapped[url].price[i]);
                     advised = true;
                 }
