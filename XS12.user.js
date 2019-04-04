@@ -2,14 +2,14 @@
 // @name           XioScript
 // @namespace      https://github.com/XiozZe/XioScript
 // @description    XioScript with XioMaintenance
-// @version        12.1.9
+// @version        12.1.10
 // @author		   XiozZe
 // @require        https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js
 // @include        http*://*virtonomic*.*/*/*
 // @exclude        http*://virtonomics.wikia.com*
 // ==/UserScript==
 
-var version = "12.1.9";
+var version = "12.1.10";
 
 this.$ = this.jQuery = jQuery.noConflict(true);
 
@@ -1897,12 +1897,17 @@ function retailPrice(type, subid, choice) {
                 } else {
                     price = price * (1 - 0.03 * (share < 8) + 0.03 * (share > 12));
                 }
+                //market 6%
             } else if (choice[0] === 8) {
                 var priceOld = mapped[mapped[url].history[i]].price[0];
                 var share = mapped[url].share[i];
 
                 price = priceOld || 0;
                 price = price * (1 - 0.03 * (share < 4.5) + 0.03 * (share > 8));
+                //если доля выше 50, то поднимем цену в 1.5 раза
+                if (share > 50) {
+                	price = price * 1.5;
+                }
             } else if (choice[0] === 3) {
                 var priceOld = mapped[mapped[url].history[i]].price[0];
                 var priceOlder = mapped[mapped[url].history[i]].price[1];
