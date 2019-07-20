@@ -2,14 +2,14 @@
 // @name           XioScript
 // @namespace      https://github.com/XiozZe/XioScript
 // @description    XioScript with XioMaintenance
-// @version        12.1.12
+// @version        12.1.13
 // @author		   XiozZe
 // @require        https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js
 // @include        http*://*virtonomic*.*/*/*
 // @exclude        http*://virtonomics.wikia.com*
 // ==/UserScript==
 
-var version = "12.1.12";
+var version = "12.1.13";
 
 this.$ = this.jQuery = jQuery.noConflict(true);
 
@@ -5430,8 +5430,7 @@ function XioMaintenance(subids, allowedPolicies) {
         for (var i = 0; i < subids.length; i++) {
             if (realsubids.indexOf(subids[i]) === -1) {
                 var urlSubid = "/" + realm + "/main/unit/view/" + subids[i];
-                postMessage("Subdivision <a href=" + urlSubid + ">" + subids[i] + "</a> is missing from the company. Options have been erased from the Local Storage.");
-                ls.removeItem("x" + realm + subids[i]);
+                postMessage("Subdivision <a href=" + urlSubid + ">" + subids[i] + "</a> seems missing from the company. <button onclick='localStorage.removeItem(\"" + "x" + realm + subids[i] + "\");this.remove();'>Click here to erase options of this subdivision from the Local Storage if it is missing.</button>");
                 continue;
             }
             var savedPolicyStrings = ls["x" + realm + subids[i]] ? ls["x" + realm + subids[i]].split(";") : [];
@@ -6164,7 +6163,7 @@ function XioScript() {
 
     //Not user company
     if ($(".tabu > .sel > a").length === 0 || $(".dashboard a").length === 0) {
-        if ($(".tabu > .sel > a").attr("href").replace('/unit_list', '/dashboard') !== $(".dashboard a").attr("href") && ($(".tabu > li:nth(0) > a").attr("href") + '/dashboard') !== $(".dashboard a").attr("href")) {
+        if ($(".tabu > .sel > a").attr("href").replace('/unit_list?new', '/dashboard').replace('/unit_list?old', '/dashboard').replace('/unit_list', '/dashboard') !== $(".dashboard a").attr("href") && ($(".tabu > li:nth(0) > a").attr("href") + '/dashboard') !== $(".dashboard a").attr("href")) {
             console.log('Not user company');
             return false;
         }
@@ -6177,7 +6176,7 @@ function XioScript() {
     }
 
     //Unit list
-    if (new RegExp("\/.*\/main\/company\/view\/[0-9]+(\/unit_list(\/xiooverview)?)?$").test(document.URL)) {
+    if (new RegExp("\/.*\/main\/company\/view\/[0-9]+(\/unit_list(\\?(old|new))?([\/&]xiooverview)?)?$").test(document.URL)) {
         console.log('Unit list');
         $("div.metro_header").append("<div style='font-size: 24px; color:gold; margin-bottom: 5px;'>XioScript " + version + "</div>"
             + "<input type=button id=XM class=XioGo value=XioMaintenance>"
@@ -6189,8 +6188,10 @@ function XioScript() {
             XioMaintenance();
         });
         $("#XO").click(function () {
-            if (new RegExp("\/.*\/main\/company\/view\/[0-9]+\/unit_list\/xiooverview$").test(document.URL)) {
+            if (new RegExp("\/.*\/main\/company\/view\/[0-9]+\/unit_list(\\?(old|new))?[\/&]xiooverview$").test(document.URL)) {
                 window.location.href = window.location.href.slice(0, -12);
+            } else if (new RegExp("\/.*\/main\/company\/view\/[0-9]+\/unit_list(\\?(old|new))$").test(document.URL)) {
+                window.location.href = window.location.href + "&xiooverview";
             } else {
                 window.location.href = window.location.href + "/xiooverview";
             }
@@ -6202,7 +6203,7 @@ function XioScript() {
             XioImport();
         });
 
-        if (new RegExp("\/.*\/main\/company\/view\/[0-9]+\/unit_list\/xiooverview").test(document.URL)) {
+        if (new RegExp("\/.*\/main\/company\/view\/[0-9]+\/unit_list(\\?(old|new))?[\/&]xiooverview").test(document.URL)) {
             XioOverview();
         }
     }
